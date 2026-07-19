@@ -27,8 +27,19 @@ local function onPetSkill(ba, target, result)
 
 end
 
+---Gets resonance values for a monster's skill id
+---@param skillId integer The network skill id
+local function getMonsterResonance(skillId)
+
+end
+
 local function emitSkillchain(action, target, result, skillchain)
-    
+    -- TODO: this is currently hardcoded for player pets.
+    if action.cmd_no ~= 13 then
+        return
+    end
+
+    -- Get the target's current resonance properties
 end
 
 local function onPacketIn(pkt)
@@ -36,19 +47,12 @@ local function onPacketIn(pkt)
     -- the cmd_no is 82 bits into the packet.
     -- 5 bytes + 32 bits (4 bytes) + 6 bits + 4 bits
     -- 40 bits + 42 bits
-    if pkt.id ~= 0x028 then
-        return
-    end
+    -- if pkt.id ~= 0x028 then
+    --     return
+    -- end
     if not BattleAction.isPossibleSkillchainEvent(pkt) then
         return
     end
-    -- -- local reader = BitReader:new()
-    -- -- reader:set_data(pkt.data);
-    -- -- reader:set_pos(10);
-    -- -- reader:set_bit_pos(2);
-    -- -- local cmd_no = reader:read(4);
-    -- -- local cmd_no = bit.band(bit.rshift(struct.unpack(pkt.data_raw, 'I', 10), 2), 0x07);
-    -- local cmd_no = ashita.bits.unpack_be(pkt.data_raw, 82, 4);
 
     -- interesting cmd_no events:
     -- cmd_no == 13 -- Monster completes skill.  Can occur with player pets.
