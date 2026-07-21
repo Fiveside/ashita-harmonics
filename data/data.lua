@@ -89,4 +89,42 @@ Export.MonsterPlayerPetMapping = T {
     [885] = 624, -- Shock Strike
 };
 
+-- and the reverse
+Export.PlayerPetMonsterMapping = T{};
+do
+    for monsterSkill, playerSkill in pairs(Export.MonsterPlayerPetMapping) do
+        Export.PlayerPetMonsterMapping[playerSkill] = monsterSkill;
+    end
+end
+
+---Takes a data record and returns the resonance properties in a more easily digestable format
+---@param record WindowerData
+---@return Skillchain[]
+function Export.getResonanceProperties(record)
+    ---@type Skillchain[]
+    local resonance = T{};
+
+    if record.skillchain_a ~= nil then
+        table.insert(resonance, record.skillchain_a);
+        if record.skillchain_b ~= "" then
+            table.insert(resonance, record.skillchain_b);
+        end
+        if record.skillchain_c ~= "" then
+            table.insert(resonance, record.skillchain_c)
+        end
+    end
+
+    return resonance;
+end
+
+---Takes a data record and returns a localized string for the record name
+---@param record WindowerData
+---@return LocalizedString
+function Export.getLocalizedString(record)
+    return {
+        en = record.en,
+        ja = record.ja,
+    };
+end
+
 return Export;

@@ -1,5 +1,7 @@
 -- https://github.com/atom0s/XiPackets/tree/main/world/server/0x0028
 
+local Export = {};
+
 -- Quirks of action packet processing.
 -- When resolving an action id, the following math must take place
 -- For weapon skills, the id is as-is
@@ -22,6 +24,22 @@
 -- In the ifrit readies "Punch" example, the action arg set is actually 544 (the player action id)
 -- This is incorrect behavior, but the text log seems fine with it?
 -- TODO: why does this work?
+-- TODO: is this actually incorrect behavior?
+
+-- TODO: one of these unknowns is probably absorb
+---@enum BattleActionMiss
+Export.Miss = T{
+    Hit = 0,   -- (The action hit the target.)
+    Miss = 1,  -- (The action missed the target.)
+    Guard = 2, -- (The action was guarded by the target.)
+    Parry = 3, -- (The action was parried by the target.)
+    Block = 4, -- (The action was blocked by the target.)
+    Unknown5 = 5, --
+    Unknown6 = 6, --
+    Unknown7 = 7, --
+    Unknown8 = 8, --
+    Evade = 9, -- (The action was evaded by the target.)
+}
 
 ---@class BattleActionTargetResult
 ---@field miss integer The type of connection this attack makes (hit, miss, block, parry, etc.)
@@ -46,7 +64,7 @@
 ---@class BattleActionTarget
 ---@field m_uID integer The defender's server id
 ---@field result_sum integer The number of effects this defender receives (max 8)
----@field results BattleActionTargetResult The list of effects (count lives in result_sum)
+---@field results BattleActionTargetResult[] The list of effects (count lives in result_sum)
 
 ---@class BattleAction
 --- A table containing information parsed from a battle packet.
@@ -58,7 +76,6 @@
 ---@field info integer More data specific to individual cmd_no types.
 ---@field targets BattleActionTarget[] A list of targets this attack hits (count lives in trg_sum)
 
-local Export = {};
 
 ---Creates a bit reader for reading packed bits (Big Endian).
 ---@param data table A list of bytes to read

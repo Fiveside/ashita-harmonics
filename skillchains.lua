@@ -10,22 +10,7 @@ local Chat = require('chat');
 -- local BitReader = require("bitreader");
 local BattleAction = require('battle_action')
 
-local function parseSkillchain(ba, target, result)
-    if not result.has_proc or result.proc_kind == 0 then
-        return
-    end
 
-    -- if result.proc_message ~= 292 then
-    --     print()
-    -- end
-
-    local chain = Constants.SKILLCHAIN_IDS[result.proc_kind]
-    return {
-        chain = chain,
-        damage = result.proc_value,
-        elements = Constants.SKILLCHAIN_ELEMENTS[chain],
-    }
-end
 
 -- called when cmd_no = 13
 local function onPetSkill(ba, target, result)
@@ -71,39 +56,63 @@ local function onPacketIn(pkt)
     -- - bit contains a flag indicating magic burst.  However documentation notes this is inconsistent.
     -- -   More reliable MB detection may come from checking the message id.
 
-    local res = AshitaCore:GetResourceManager();
-    local mem = AshitaCore:GetMemoryManager();
+    -- local res = AshitaCore:GetResourceManager();
+    -- local mem = AshitaCore:GetMemoryManager();
 
-    local action = BattleAction.parseIncomingPacketEvent(pkt);
-    for _, target in ipairs(action.targets) do
-        local actorId = action.m_uID;
-        local receiverId = target.m_uID;
-        local actorEntity = { Name = "unknown" };
-        local receiverEntity = { Name = "unknown" };
-        for i = 0, 2300 do
-            local entity = GetEntity(i);
-            if entity ~= nil then
-                if entity.ServerId == actorId then
-                    actorEntity = entity;
-                elseif entity.ServerId == receiverId then
-                    receiverEntity = entity;
-                end
-            end
-        end
-        local skillName = res:GetString("monsters.abilities", action.cmd_arg);
-        local actionId = ashita.bits.unpack_be(pkt.data_raw, 0, 213, 17);
-        print(string.format("[%s][%d] %s -> %s", actorEntity.Name, actionId, skillName:clean(), receiverEntity.Name))
-        for _, result in ipairs(target.results) do
-            local sc = parseSkillchain(action, target, result);
-            if sc ~= nil then
-                emitSkillchain(action, target, result, sc);
-            end
-        end
-    end
+    -- local action = BattleAction.parseIncomingPacketEvent(pkt);
+    -- for _, target in ipairs(action.targets) do
+    --     local actorId = action.m_uID;
+    --     local receiverId = target.m_uID;
+    --     local actorEntity = { Name = "unknown" };
+    --     local receiverEntity = { Name = "unknown" };
+    --     for i = 0, 2300 do
+    --         local entity = GetEntity(i);
+    --         if entity ~= nil then
+    --             if entity.ServerId == actorId then
+    --                 actorEntity = entity;
+    --             elseif entity.ServerId == receiverId then
+    --                 receiverEntity = entity;
+    --             end
+    --         end
+    --     end
+    --     local skillName = res:GetString("monsters.abilities", action.cmd_arg);
+    --     local actionId = ashita.bits.unpack_be(pkt.data_raw, 0, 213, 17);
+    --     print(string.format("[%s][%d] %s -> %s", actorEntity.Name, actionId, skillName:clean(), receiverEntity.Name))
+    --     for _, result in ipairs(target.results) do
+    --         local sc = parseSkillchain(action, target, result);
+    --         if sc ~= nil then
+    --             emitSkillchain(action, target, result, sc);
+    --         end
+    --     end
+    -- end
 end
 
 
 local Export = {};
+
+---Take a result from an action packet and return a skillchain inside.
+---@param ba BattleAction
+---@param target BattleActionTarget
+---@param result BattleActionTargetResult
+---@return table? TODO - flesh this out
+function Export.parseSkillchain(ba, target, result)
+    if not result.has_proc or result.proc_kind == 0 then
+        return;
+    end
+
+    -- if result.proc_message ~= 292 then
+    --     print()
+    -- end
+
+    -- TODO: Figure out what happens when the target absorbs the skillchain, healing hp.
+
+    local chain = Constants.SKILLCHAIN_IDS[result.proc_kind]
+    return {
+        chain = chain,
+        damage = result.proc_value,
+        elements = Constants.SKILLCHAIN_ELEMENTS[chain],
+    }
+end
 
 function Export.install()
     Events.on(Events.PACKET_IN, onPacketIn)
