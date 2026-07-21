@@ -1,3 +1,8 @@
+-- This file is about reading incoming packets and firing resonance
+-- events when an action occurs that causes a target to
+-- start resonating, stop resonating, modify their resonance properties,
+-- or trigger a skillchain.
+
 local Events = require('events');
 local Constants = require('constants');
 local Chat = require('chat');
@@ -65,7 +70,7 @@ local function onPacketIn(pkt)
     -- - Check miss, as cmd_no==4 is also used for weapon skills that do not complete due to out of range.
     -- - bit contains a flag indicating magic burst.  However documentation notes this is inconsistent.
     -- -   More reliable MB detection may come from checking the message id.
- 
+
     local res = AshitaCore:GetResourceManager();
     local mem = AshitaCore:GetMemoryManager();
 
@@ -73,8 +78,8 @@ local function onPacketIn(pkt)
     for _, target in ipairs(action.targets) do
         local actorId = action.m_uID;
         local receiverId = target.m_uID;
-        local actorEntity = {Name = "unknown"};
-        local receiverEntity = {Name = "unknown"};
+        local actorEntity = { Name = "unknown" };
+        local receiverEntity = { Name = "unknown" };
         for i = 0, 2300 do
             local entity = GetEntity(i);
             if entity ~= nil then

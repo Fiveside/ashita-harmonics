@@ -3,7 +3,7 @@ local Constants = require('constants');
 
 ---@module 'battle_action'
 
-local Export = T{};
+local Export = T {};
 
 local function allMemoryEntitiesIterator()
 end
@@ -59,6 +59,4 @@ function Export.getMonsterAbility(action, target, result)
     if owner == nil then
         return nil; -- TODO: return the monster skill.
     end
-
-
 end

@@ -20,7 +20,7 @@ ffi.C.QueryPerformanceFrequency(PERFORMANCE_FREQUENCY);
 
 local function getPerformanceStampMilliseconds()
     ffi.C.QueryPerformanceCounter(PERFORMANCE_COUNTER);
-    
+
     -- Performance counter is in second resolution, and frequency is in the range of
     -- some hundred thousand or million.  This means we still have high resolution if
     -- we multiply here to obtain milliseconds or even microseconds.
@@ -100,14 +100,6 @@ end
 ---@param after integer The amount of time to delay execution by (milliseconds).
 ---@param fn fun() The callback to run
 function Events.after(after, fn)
-    -- ffi.C.gettimeofday(tv, nil);
-    -- local ms = tv.tv_usec + after;
-    -- local secdelta = math.modf(ms / 1000);
-    -- local afterTime = T {
-    --     sec = tv.tv_sec + secdelta,
-    --     ms = after % 1000,
-    -- }
-    -- table.insert(timeEvents, afterTime);
     table.insert(timeEvents, {
         callback = fn,
         after = getPerformanceStampMilliseconds() + after,

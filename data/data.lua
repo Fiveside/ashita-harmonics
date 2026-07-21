@@ -39,7 +39,7 @@ local Constants = require('constants');
 ---@field element integer XI Element ID
 ---@field skill integer XI Combat skill ID
 
-local Export = T{};
+local Export = T {};
 
 ---@type WeaponSkillData[]
 Export.WeaponSkills = require('data/resources/resources_data/weapon_skills')
@@ -59,7 +59,7 @@ Export.JobAbilities = require('data/resources/resources_data/job_abilities')
 ---@class MonsterAbility : BaseDataAbility
 
 ---@class JobAbility : BaseDataAbility
----@field job 
+---@field type JobAbilityDataType
 
 -- Windower stores resonance data for player pets on the job abilites table instead
 -- of the monster abilities table.  This is a mapping of monster abilities that resonate
@@ -70,7 +70,7 @@ Export.JobAbilities = require('data/resources/resources_data/job_abilities')
 --
 -- TODO: This mapping is currently incomplete and only contains data for jobs and skills
 -- on horizon atm.  Need to add the rest of the mappings
-Export.MonsterPlayerPetMapping = T{
+Export.MonsterPlayerPetMapping = T {
     -- SMN pet skills.
     [907] = 513, -- Poison Nails
     [831] = 528, -- Moonlit Charge
