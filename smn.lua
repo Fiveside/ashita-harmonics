@@ -24,6 +24,7 @@ local function getActor(action)
     -- TODO: Create a name cache for a zone and use that instead of these.
     -- as these may or may not be populated at lookup time.
     local pet = Utils.getEntityByServerId(action.m_uID);
+
     if pet ~= nil then
         petName = pet.Name;
         local owner = Utils.getPetOwnerByEntity(pet);
@@ -42,7 +43,7 @@ end
 
 ---Get the actor information for a resonating summoner action. Triggers on battle action when cmd_no == 13
 ---@param action BattleAction
----@return {actor: ResonanceActionActor, action: ResonanceActionAction}
+---@return {actor: ResonanceActionActor, action: ResonanceActionAction}?
 function Export.getResonanceAbility(action)
     -- We can assert whether our actor was a player smn's pet by looking up the skill used.
     -- Skillchain data for smn pets is stored on the job ability
@@ -72,9 +73,12 @@ function Export.getResonanceAbility(action)
 
     -- TODO: This is a Horizon specific lookup, see the top of battle_action for more info.
     local monsterActionId = Data.PlayerPetMonsterMapping[actionId];
-    local attackName = AshitaCore:GetResourceManager():GetString('monsters.abilities', monsterActionId-256);
+    local attackName = AshitaCore:GetResourceManager():GetString('monsters.abilities', monsterActionId - 256);
 
-    return T{
+    -- Data files store 'monsters.abilities' as nul terminated strings
+    attackName = string.match(attackName, '^[^\0]+'):clean();
+
+    return T {
         actor = getActor(action),
         action = {
             recordName = Data.getLocalizedString(jobAbility),
@@ -83,3 +87,5 @@ function Export.getResonanceAbility(action)
         },
     };
 end
+
+return Export;

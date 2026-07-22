@@ -273,7 +273,8 @@ Export.SkillIds = T {
 
 ---@class ResonanceActionEffect
 ---@field id integer Server ID of the defender in this action
----@field name? string The name of this defendor if we have it
+---@field name? string The name of this defender if we have it
+---@field defaultName string A fallback string to use if we can't get the defender's name
 ---@field damage integer The amount of damage the defender took from this action
 ---@field kind BattleActionMiss How the action connected with the defender.
 

@@ -1,3 +1,5 @@
+-- Announcing combat related events.
+
 local Events = require('events');
 local BattleAction = require('battle_action');
 local SMN = require('smn');
@@ -29,6 +31,7 @@ local function getActionEffect(ba, target, result)
 
         -- TODO: the name cache...
         name = targetName,
+        defaultName = "{Unknown Defender}",
         damage = result.value,
         kind = result.Miss,
     };
@@ -50,11 +53,11 @@ local function getSkillchain(ba, target, result)
 
     -- TODO: Figure out what happens when the target absorbs the skillchain, healing hp.
 
-    local chain = Constants.SKILLCHAIN_IDS[result.proc_kind]
+    local chain = Constants.SkillchainIds[result.proc_kind]
     return {
         chain = chain,
         damage = result.proc_value,
-        elements = Constants.SKILLCHAIN_ELEMENTS[chain],
+        elements = Constants.SkillchainElements[chain],
     }
 end
 
@@ -75,19 +78,20 @@ local function onPacketIn(pkt)
         return;
     end
 
-    for _, baTarget in ipairs(ba.targets) do
-        for _, baResult in ipairs(baTarget.results) do
-            local result = getActionEffect(ba, baTarget, baResult);
-            if result ~= nil then
+    for _, target in ipairs(ba.targets) do
+        for _, result in ipairs(target.results) do
+            local effect = getActionEffect(ba, target, result);
+
+            if effect ~= nil then
                 -- Emit event!
-                local chain = getSkillchain(ba, baTarget, baResult);
+                local chain = getSkillchain(ba, target, result);
                 local event = T {
                     actor = action.actor,
                     action = action.action,
-                    effect = result,
+                    effect = effect,
                     chain = chain,
                 }
-                Events.trigger(Events.RESONANCE_SKILL, event);
+                Events.trigger(Events.RESONANCE_ACTION, event);
 
                 -- If a skillchain occurred, also broadcast that event.
                 if chain ~= nil then
@@ -98,9 +102,21 @@ local function onPacketIn(pkt)
     end
 end
 
+-- ---When a resonance action occurs, track it and broadcast skillchain window events.
+-- ---@param event ResonanceAction
+-- local function onResonanceAction(event)
+-- end
+
+
+-- ---When a skillchain occurs, track it and broadcast burst window events.
+-- ---@param event SkillchainAction
+-- local function onSkillchainAction(event)
+-- end
 
 function Export.install()
-    Events.on(Events.PACKET_IN, onPacketIn)
+    Events.on(Events.PACKET_IN, onPacketIn);
+    -- Events.on(Events.RESONANCE_ACTION, onResonanceAction);
+    -- Events.on(Events.SKILLCHAIN, onSkillchainAction);
 end
 
 return Export;
