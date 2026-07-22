@@ -26,6 +26,18 @@ local Export = {};
 -- TODO: why does this work?
 -- TODO: is this actually incorrect behavior?
 
+-- corresponds to BattleAction.cmd_no
+-- This is an incomplete list.
+---@enum CommandKind
+Export.CommandKind = T{
+    SkillFinish = 3,
+    MagicFinish = 4, -- Also sent if a weapon skill fails due because the monster ran out of range.
+    AbilityFinish = 6,
+    MonsterSkillFinish = 11, -- Trusts.
+    PetSkillFinish = 13, -- SMN pets.
+}
+
+-- What happened when this action connects.
 -- TODO: one of these unknowns is probably absorb
 ---@enum BattleActionMiss
 Export.Miss = T{
@@ -179,7 +191,6 @@ function Export.parseIncomingPacketEvent(e)
 
             local has_proc = readBits(1);
             result.has_proc = has_proc ~= 0;
-            -- result.has_proc = readBits(1);
             if result.has_proc then
                 result.proc_kind = readBits(6);
                 result.proc_info = readBits(4);
@@ -189,7 +200,6 @@ function Export.parseIncomingPacketEvent(e)
 
             local has_react = readBits(1);
             result.has_react = has_react ~= 0;
-            -- result.has_react = readBits(1);
             if result.has_react then
                 result.react_kind = readBits(6);
                 result.react_info = readBits(4);

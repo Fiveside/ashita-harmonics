@@ -1,3 +1,6 @@
+
+---@module 'battle_action'
+
 local Export = T {};
 
 ---@class LocalizedString
@@ -255,6 +258,40 @@ Export.SkillIds = T {
     [57] = "Synergy",
     [58] = "ChocoboDigging",
 };
+
+---@class ResonanceActionActor
+---@field id integer Server ID of the actor in this action
+---@field name string? The name of this actor if we have it
+---@field defaultName string A fallback string to use if we cannot get the actor's name
+---@field owner string? The name of this actor's owner if we have it. (If this actor is a pet.)
+---@field defaultOwner string? A fallback string to use if we cannot get the actor's owner's name
+
+---@class ResonanceActionAction
+---@field recordName LocalizedString The name of this action as described the resource table.
+---@field name string The name of this action as described in the dat file.
+---@field resonance Skillchain[] A list of resonance properties this skill causes
+
+---@class ResonanceActionEffect
+---@field id integer Server ID of the defender in this action
+---@field name? string The name of this defendor if we have it
+---@field damage integer The amount of damage the defender took from this action
+---@field kind BattleActionMiss How the action connected with the defender.
+
+---@class ResonanceActionSkillchain
+---@field chain Skillchain the type of skillchain
+---@field damage integer How much damage this skillchain did
+---@field elements Element[] The elements associated with this skillchain.
+
+---@class ResonanceActionBase
+---@field actor ResonanceActionActor
+---@field action ResonanceActionAction
+---@field effect ResonanceActionEffect
+
+---@class ResonanceAction : ResonanceActionBase
+---@field chain ResonanceActionSkillchain? The skillchain this effect caused (if it caused one)
+
+---@class SkillchainAction : ResonanceActionBase
+---@field chain ResonanceActionSkillchain The skillchain this effect caused (Non-optional, as this comes through a Skillchain event)
 
 
 return Export;

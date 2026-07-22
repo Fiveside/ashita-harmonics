@@ -46,6 +46,7 @@ local ASHITA_PACKET_IN_NAME = "event_emitter_packet_handler"
 
 Events.PACKET_IN = "packetIn"
 Events.PACKET_OUT = "packetIn"
+Events.RESONANCE_SKILL = "resonanceSkill"
 Events.SKILLCHAIN = "skillchain"
 Events.SKILLCHAIN_WINDOW_OPEN = "skillchainWindowOpen"
 Events.SKILLCHAIN_WINDOW_CLOSE = "skillchainWindowClose"
@@ -57,9 +58,10 @@ Events.MAGIC_BURST_WINDOW_CLOSE = "magicBurstWindowOpen"
 local namedEvents = T {
     [Events.PACKET_IN] = T {},
     [Events.PACKET_OUT] = T {},
+    [Events.RESONANCE_SKILL] = T{},
     [Events.SKILLCHAIN] = T {},
-    [Events.MAGIC_BURST_WINDOW_OPEN] = T {},
-    [Events.MAGIC_BURST_WINDOW_OPEN] = T {},
+    -- [Events.MAGIC_BURST_WINDOW_OPEN] = T {},
+    -- [Events.MAGIC_BURST_WINDOW_OPEN] = T {},
 };
 
 ---@type TimeEvent[]
